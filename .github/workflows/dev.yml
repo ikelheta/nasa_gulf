@@ -1,0 +1,25 @@
+name: Push to dev server 
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+     -  name: Checkout repository
+        uses: actions/checkout@v2
+
+     - name: Deploy to dev EC2 instance
+       env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST:  ec2-54-220-203-34.eu-west-1.compute.amazonaws.com
+          REMOTE_USER: ubuntu
+       run: |
+         echo "$SSH_PRIVATE_KEY"  > kafed-intercom.pem
+         chmod  400 kafed-intercom.pem
+         ssh -i kafed-intercom.pem -o "StrictHostKeyChecking no" $REMOTE_USER@$REMOTE_HOST " \
+           cd HMA_TECH_Backend  &&  git pull  &&  npm i   && pm2 restart HMA_TECH_Backend "
