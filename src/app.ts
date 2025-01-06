@@ -66,7 +66,7 @@ app.use((req, res, next) => {
 
 app.use(AppErrorHandler.errorHandler);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 9091;
 
 const start = async (): Promise<void> => {
   try {
