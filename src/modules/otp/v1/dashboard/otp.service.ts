@@ -15,7 +15,7 @@ class OtpService {
   constructor() {
     this.otpRepo = BaseRepository.getInstance(Otp);
   }
-  async createOne(body: IOtp) {
+  async createOne(body: any) {
     const otp = await this.otpRepo.create(body);
     return otp;
   }

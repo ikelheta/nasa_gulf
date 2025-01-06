@@ -60,13 +60,13 @@ export async function forgetPassword(
   const otp = generateRandomDigitNumber(6);
   otpServ.deletePermanently({
     where: {
-      adminId: admin.id,
+      consultantId: admin.id,
     },
   });
 
   const created = await otpServ.createOne({
     otp,
-    adminId: admin.id,
+    consultantId: admin.id,
     validTo: new Date(new Date().getTime() + 10 * 60 * 1000),
   });
 
@@ -103,7 +103,7 @@ export async function otpValidation(
   }
   const existingOtp = await otpServ.findOne({
     where: {
-      adminId: admin.id,
+      consultantId: admin.id,
       otp,
     },
   });
@@ -143,7 +143,7 @@ export async function updatePassword(
   }
   const existingOtp = await otpServ.findOne({
     where: {
-      adminId: admin.id,
+      consultantId: admin.id,
       otp,
     },
   });

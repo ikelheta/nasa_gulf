@@ -55,13 +55,13 @@ export async function forgetPassword(req: Request, res: Response) {
   const otp = generateRandomDigitNumber(6);
   otpServ.deletePermanently({
     where: {
-      adminId: admin.id,
+      employeeId: admin.id,
     },
   });
 
   const created = await otpServ.createOne({
     otp,
-    adminId: admin.id,
+    employeeId: admin.id,
     validTo: new Date(new Date().getTime() + 10 * 60 * 1000),
   });
 
@@ -94,7 +94,7 @@ export async function otpValidation(req: Request, res: Response) {
   }
   const existingOtp = await otpServ.findOne({
     where: {
-      adminId: admin.id,
+      employeeId: admin.id,
       otp,
     },
   });
@@ -130,7 +130,7 @@ export async function updatePassword(req: Request, res: Response) {
   }
   const existingOtp = await otpServ.findOne({
     where: {
-      adminId: admin.id,
+      employeeId: admin.id,
       otp,
     },
   });
