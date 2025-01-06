@@ -1,21 +1,20 @@
 import { Router } from "express";
 import asyncWrapper from "../../../../shared/utils/async-wrapper";
 import { authenticate } from "../../../../middleware/authentication";
-import * as contractorController from "./contractor.controller";
+import * as projectrController from "./projects.controller";
 import { authorize } from "../../../../middleware/authorization";
 import { SystemUserTypes } from "../../../../shared/enums";
 
 const contractorRoutes = Router();
 contractorRoutes.use(asyncWrapper(authenticate))
-contractorRoutes.use(asyncWrapper(authorize(SystemUserTypes.Admin)))
+contractorRoutes.use(asyncWrapper(authorize(SystemUserTypes.Employee)))
+
 contractorRoutes
   .route("/")
-  .get(asyncWrapper(contractorController.findAll))
-  .post(asyncWrapper(contractorController.create));
+  .get(asyncWrapper(projectrController.findAll))
 contractorRoutes
   .route("/:id")
-  .get(asyncWrapper(contractorController.findOne))
-  .put(asyncWrapper(contractorController.update))
-  .delete(asyncWrapper(contractorController.deleteOne));
+  .get(asyncWrapper(projectrController.findOne))
+
 
 export default contractorRoutes;

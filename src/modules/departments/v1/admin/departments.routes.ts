@@ -2,8 +2,11 @@ import { Router } from "express";
 import asyncWrapper from "../../../../shared/utils/async-wrapper";
 import { authenticate } from "../../../../middleware/authentication";
 import * as departmentController from "./departments.controller"
+import { SystemUserTypes } from "../../../../shared/enums";
+import { authorize } from "../../../../middleware/authorization";
 const departmentRoutes = Router();
-
+departmentRoutes.use(asyncWrapper(authenticate))
+departmentRoutes.use(asyncWrapper(authorize(SystemUserTypes.Admin)))
 departmentRoutes
     .route("/")
     .get(asyncWrapper(departmentController.findAll))

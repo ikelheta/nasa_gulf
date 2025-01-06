@@ -71,7 +71,7 @@ const PORT = process.env.PORT || 9091;
 
 const start = async (): Promise<void> => {
   try {
-    await createTables();
+    // await createTables();
     app.listen(PORT, () => {
       console.log(`Server started on port ${PORT}`);
     });

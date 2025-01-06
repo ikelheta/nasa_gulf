@@ -2,11 +2,13 @@ import { Router } from "express";
 import * as controller from "./employees.controller";
 import asyncWrapper from "../../../../shared/utils/async-wrapper";
 import { authenticate } from "../../../../middleware/authentication";
+import { authorize } from "../../../../middleware/authorization";
+import { SystemUserTypes } from "../../../../shared/enums";
 
 const adminRoutes = Router();
 
-// adminRoutes.use(asyncWrapper(authenticate("jwt")));
-adminRoutes
+adminRoutes.use(asyncWrapper(authenticate))
+adminRoutes.use(asyncWrapper(authorize(SystemUserTypes.Admin)))
   .route("/")
   .post(asyncWrapper(controller.createEmployee))
   .get(asyncWrapper(controller.getAll))
