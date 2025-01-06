@@ -44,7 +44,7 @@ import Consultant from "../consultant.model";
   async findByIdOrThrowError(id: string, options: FindOptions) {
     const admin = await this.findById(id, options);
     if (!admin) {
-      throw new UnprocessableEntityError("Admin not found");
+      throw new UnprocessableEntityError("Consultant not found");
     }
     return admin;
   }

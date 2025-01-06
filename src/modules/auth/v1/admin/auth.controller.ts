@@ -27,6 +27,7 @@ import {
 import { sendEmail } from "../../../../shared/utils/communication-functions";
 import otpServ from "../../../otp/v1/dashboard/otp.service";
 import { generateToken } from "../../../../shared/utils/jwt";
+import { SystemUserTypes } from "../../../../shared/enums";
 
 
 export async function loginAdmin(req : Request, res : Response) {
@@ -37,12 +38,11 @@ export async function loginAdmin(req : Request, res : Response) {
       throw new BadRequestError('Invalid Email or Password')
     }
     const isMatch = await comparePassword(password, admin.password)
-    console.log(isMatch);
     if(!isMatch){
       throw new BadRequestError('Invalid Email or Password')
     }
     delete admin.password
-    const token = generateToken(admin.id)
+    const token = generateToken(admin.id, SystemUserTypes.Admin)
     res.json({admin, token })
 }
 export async function forgetPassword(
@@ -62,13 +62,13 @@ export async function forgetPassword(
   const otp = generateRandomDigitNumber(6);
   otpServ.deletePermanently({
     where: {
-      adminId: admin.id,
+      userId: admin.id,
     },
   });
 
   const created = await otpServ.createOne({
     otp,
-    adminId: admin.id,
+    userId: admin.id,
     validTo: new Date(new Date().getTime() + 10 * 60 * 1000),
   });
 
@@ -103,9 +103,11 @@ export async function otpValidation(
   if (!admin) {
     throw new NotFoundError("This email is not exist");
   }
+  console.log(admin);
+  console.log(await otpServ.findOne({}));
   const existingOtp = await otpServ.findOne({
     where: {
-      adminId: admin.id,
+      userId: admin.id,
       otp,
     },
   });
@@ -145,7 +147,7 @@ export async function updatePassword(
   }
   const existingOtp = await otpServ.findOne({
     where: {
-      adminId: admin.id,
+      userId: admin.id,
       otp,
     },
   });

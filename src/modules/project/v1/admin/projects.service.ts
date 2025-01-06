@@ -78,7 +78,7 @@ class ProjectService {
   async findByIdOrThrowError(id: string, options: FindOptions = {}) {
     const one = await this.findById(id, options);
     if (!one) {
-      throw new UnprocessableEntityError("Admin not found");
+      throw new UnprocessableEntityError("Project not found");
     }
     return one;
   }

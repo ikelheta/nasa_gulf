@@ -26,13 +26,14 @@ export const authenticate = async (
     if (decoded.type == SystemUserTypes.Admin) {
       const admin = await adminServ.findById(decoded.id, { attributes: { exclude: ['password'] } });
       req.user = { ...admin, type: SystemUserTypes.Admin }; // Attach user info to request object
-      next();
+      return next();
+      
 
     }
     if (decoded.type == SystemUserTypes.Employee) {
       const employee = await employeeServ.findById(decoded.id, { attributes: { exclude: ['password'] } });
       req.user = { ...employee, type: SystemUserTypes.Employee }; // Attach user info to request object
-      next();
+      return next();
 
     }
     throw new UnAuthorizedError()

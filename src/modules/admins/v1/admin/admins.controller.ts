@@ -15,8 +15,8 @@ import { handlePaginationSort } from "../../../../shared/utils/handle-sort-pagin
 export async function getProfile(
   req: AuthenticationRequest,
   res: Response,
-  next: NextFunction
 ) {
+  console.log(req.user);
   const { id } = req.user;
   const attributes = ["id", "image", "name", "email"];
   const include: any[] = [];
@@ -125,9 +125,9 @@ export async function getOne(
   res: Response,
   next: NextFunction
 ) {
-  const {id} =  req.params
+  const { id } = req.params
   validateUUID(id)
-  const one = await adminServ.findByIdOrThrowError(id, {attributes : {exclude : ["password"]}})
+  const one = await adminServ.findByIdOrThrowError(id, { attributes: { exclude: ["password"] } })
   res.json({
     data: one,
     message: null,
@@ -171,13 +171,21 @@ export async function updateOne(
     if (!isMatch) {
       req.body.passwordChangedAt = new Date();
     }
-   const hashed = await hashPassword(req.body.password)
-   req.body.password = hashed
+    const hashed = await hashPassword(req.body.password)
+    req.body.password = hashed
   }
-  const updatedAdmin = await adminServ.update(req.body, {where : {id}})
+  const updatedAdmin = await adminServ.update(req.body, { where: { id } })
 
   res.json({
     data: _.pick(updatedAdmin, ["id", "name", "email"]),
     message: null,
   });
+}
+export async function deleteOne(req: AuthenticationRequest,
+  res: Response,
+  next: NextFunction) {
+    res.json({
+      data : null,
+      message : null
+    })
 }

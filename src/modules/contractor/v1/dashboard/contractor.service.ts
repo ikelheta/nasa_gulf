@@ -47,7 +47,7 @@ class ContractorService {
   async findByIdOrThrowError(id: string, options: FindOptions = {}) {
     const one = await this.findById(id, options);
     if (!one) {
-      throw new UnprocessableEntityError("Admin not found");
+      throw new UnprocessableEntityError("Contractor not found");
     }
     return one;
   }

@@ -2,7 +2,7 @@ import { DataTypes, Model } from "sequelize";
 import sequelize from "../../../config/db/config";
 import Admin from "../../admins/v1/admins.model";
 
-class Otp extends Model {}
+class Otp extends Model { }
 
 Otp.init(
   {
@@ -15,6 +15,10 @@ Otp.init(
       type: DataTypes.STRING(255),
       allowNull: false,
     },
+    userId: {
+      type: DataTypes.UUID,
+      allowNull: false
+    },
     validTo: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -23,7 +27,6 @@ Otp.init(
   {
     sequelize,
     modelName: "otps",
-    paranoid: true,
   }
 );
 

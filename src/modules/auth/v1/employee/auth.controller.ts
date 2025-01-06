@@ -26,6 +26,7 @@ import { sendEmail } from "../../../../shared/utils/communication-functions";
 import otpServ from "../../../otp/v1/dashboard/otp.service";
 import employeeServ from "../../../employees/v1/admin/employees.service";
 import { generateToken } from "../../../../shared/utils/jwt";
+import { SystemUserTypes } from "../../../../shared/enums";
 
 export async function loginEmployee(req: Request, res: Response) {
   validateEmployeeLogin(req.body);
@@ -39,7 +40,7 @@ export async function loginEmployee(req: Request, res: Response) {
     throw new BadRequestError("Invalid Email or Password");
   }
   delete admin.password;
-  const token = generateToken(admin.id);
+  const token = generateToken(admin.id,  SystemUserTypes.Employee);
   res.json({ admin, token });
 }
 export async function forgetPassword(req: Request, res: Response) {
@@ -55,13 +56,13 @@ export async function forgetPassword(req: Request, res: Response) {
   const otp = generateRandomDigitNumber(6);
   otpServ.deletePermanently({
     where: {
-      employeeId: admin.id,
+      userId: admin.id,
     },
   });
 
   const created = await otpServ.createOne({
     otp,
-    employeeId: admin.id,
+    userId: admin.id,
     validTo: new Date(new Date().getTime() + 10 * 60 * 1000),
   });
 
@@ -94,7 +95,7 @@ export async function otpValidation(req: Request, res: Response) {
   }
   const existingOtp = await otpServ.findOne({
     where: {
-      employeeId: admin.id,
+      userId: admin.id,
       otp,
     },
   });
@@ -130,7 +131,7 @@ export async function updatePassword(req: Request, res: Response) {
   }
   const existingOtp = await otpServ.findOne({
     where: {
-      employeeId: admin.id,
+      userId: admin.id,
       otp,
     },
   });

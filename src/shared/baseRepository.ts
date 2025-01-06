@@ -62,7 +62,7 @@ export class BaseRepository<T extends Model<any, any>> {
     options: FindOptions = {}
   ): Promise<any | null> {
     const result = await this.model.findByPk(id, options);
-    return result || null;
+    return result ? result.get() : null;
   }
 
   async findOneByIdOrThrowError(

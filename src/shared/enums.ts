@@ -11,7 +11,8 @@ export enum Gender {
 
 export enum SystemUserTypes {
   Admin = 'Admin',
-  Employee = 'Employee'
+  Employee = 'Employee',
+  Consultant = 'Consultant'
 }
 export enum ProjectRequestTypes {
   WIR = 'WIR',

@@ -21,6 +21,7 @@ import projectRoutes from "./modules/project/versions.routes"
 import consultantRoutes from "./modules/consultant/versions.routes"
 
 import uploadRoutes from "./modules/uploads/versions.routes";
+import Otp from "./modules/otp/v1/otp.model";
 
 process.env.TZ = "Asia/Riyadh";
 const limiter = rateLimit({

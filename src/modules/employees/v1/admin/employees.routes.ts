@@ -10,15 +10,15 @@ adminRoutes
   .route("/")
   .post(asyncWrapper(controller.createEmployee))
   .get(asyncWrapper(controller.getAll))
-  adminRoutes
-  .route("/:id")
-  .get(asyncWrapper(controller.getOne))
-  .put(asyncWrapper(controller.updateOne))
-  .delete(asyncWrapper(controller.deleteOne))
 
 adminRoutes
   .route("/profile")
   .get(asyncWrapper(controller.getProfile))
   .put(asyncWrapper(controller.updateProfile));
+adminRoutes
+  .route("/:id")
+  .get(asyncWrapper(controller.getOne))
+  .put(asyncWrapper(controller.updateOne))
+  .delete(asyncWrapper(controller.deleteOne))
 
 export default adminRoutes;
