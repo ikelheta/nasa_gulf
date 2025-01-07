@@ -20,6 +20,7 @@ import employeesService from "../../../employees/v1/admin/employees.service";
 import Employee from "../../../employees/v1/employees.model";
 import Consultant from "../../../consultant/v1/consultant.model";
 import consultantService from "../../../consultant/v1/admin/consultant.service";
+import ProjectRequest from "../../../projectRequests/v1/projectsRequest.model";
 
 export async function findAll(req: Request, res: Response) {
   const { order, orderBy, limit, offset } = handlePaginationSort(req.query);
@@ -133,6 +134,9 @@ export async function findOne(req: Request, res: Response) {
       model: Consultant,
       as: "consultant",
       attributes : ["id", "name", "email", "image" ]
+    },
+    {
+      model: ProjectRequest,
     },
   ]
   const data = await projectServ.findByIdOrThrowError(id, {include});

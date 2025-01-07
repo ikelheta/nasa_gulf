@@ -5,6 +5,7 @@ import Department from "../../modules/departments/v1/departments.model";
 import Employee from "../../modules/employees/v1/employees.model";
 import Otp from "../../modules/otp/v1/otp.model";
 import Project from "../../modules/project/v1/projects.model";
+import ProjectRequest from "../../modules/projectRequests/v1/projectsRequest.model";
 import Role from "../../modules/roles/v1/roles.model";
 import ProjectEngineers from "../../shared/junctionTables/projectEmployees.model";
 import ProjectSubContractors from "../../shared/junctionTables/projectsSubContractors.mode";
@@ -106,6 +107,28 @@ const setupAssociations = () => {
         as: 'engineers',
         through: ProjectEngineers
 
+    })
+
+    // Project aassociations
+    ProjectRequest.belongsTo(Project, {
+        foreignKey: 'projectId',
+    });
+    Project.hasMany(ProjectRequest, {
+        foreignKey: 'projectId',
+    })
+    ///////////////////////////////////////
+    ProjectRequest.belongsTo(Employee, {
+        foreignKey: 'createdByEmployee',
+    });
+    Employee.hasMany(ProjectRequest, {
+        foreignKey: 'createdByEmployee',
+    })
+    ///////////////////////////////////////
+    ProjectRequest.belongsTo(Admin, {
+        foreignKey: 'createdByAdmin',
+    });
+    Admin.hasMany(ProjectRequest, {
+        foreignKey: 'createdByAdmin',
     })
 }
 

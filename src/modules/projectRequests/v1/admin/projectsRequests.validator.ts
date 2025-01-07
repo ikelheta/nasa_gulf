@@ -1,15 +1,12 @@
 import Joi from "joi";
 import { UnprocessableEntityError } from "../../../../shared/utils/app-error";
+import { ProjectRequestDomainTypes } from "../../../../shared/enums";
+import ProjectRequest from "../projectsRequest.model";
 
-export function validateCreateProject(body: object) {
+export function validateCreateProjectRequest(body: object) {
   const schema = Joi.object({
-    location: Joi.string().max(255).required(),
-    nameAr: Joi.string().max(255).required(),
-    nameEn: Joi.string().max(255).required(),
     description: Joi.string(),
-    managerId: Joi.string().required(),
-    engineersIds : Joi.array().items(Joi.string()).unique(),
-    image: Joi.string()
+    images: Joi.array().items(Joi.string()
       .trim()
       .regex(/\.(jpg|jpeg|png|HEIF|svg)$/i)
       .messages({
@@ -19,13 +16,10 @@ export function validateCreateProject(body: object) {
         "string.pattern.base":
           "image must have a valid file extension (jpg, jpeg, png).",
         "any.required": "image is required and cannot be null.",
-      }).required(),
-    code : Joi.string().max(255).required(),
-    contractorId : Joi.string().uuid().required(),
-    subCotractorId : Joi.array().items(Joi.string()).unique().required(),
-    consultantId : Joi.string().uuid().required()
-
-   
+      })),
+    type: Joi.string().valid(...Object.values(ProjectRequestDomainTypes)).required(),
+    requestType: Joi.string().valid(...Object.values(ProjectRequest)).required(),
+    projectId: Joi.string().uuid().required(),
   });
   const { error } = schema.validate(body);
   if (error) {
@@ -34,15 +28,10 @@ export function validateCreateProject(body: object) {
   return;
 }
 
-export function validateUpdateProject(body: object) {
+export function validateUpdateProjectRequest(body: object) {
   const schema = Joi.object({
-    nameAr: Joi.string().max(255),
-    nameEn: Joi.string().max(255),
-    location: Joi.string().max(255),
     description: Joi.string(),
-    managerId: Joi.string().required(),
-    engineersIds : Joi.array().items(Joi.string()).unique(),
-    image: Joi.string()
+    images: Joi.array().items(Joi.string()
       .trim()
       .regex(/\.(jpg|jpeg|png|HEIF|svg)$/i)
       .messages({
@@ -52,11 +41,10 @@ export function validateUpdateProject(body: object) {
         "string.pattern.base":
           "image must have a valid file extension (jpg, jpeg, png).",
         "any.required": "image is required and cannot be null.",
-      }).required(),
-    code : Joi.string().max(255),
-    contractorId : Joi.string().uuid().required(),
-    subCotractorId : Joi.array().items(Joi.string()).unique().required(),
-    consultantId : Joi.string().uuid().required()
+      })),
+    type: Joi.string().valid(...Object.values(ProjectRequestDomainTypes)).required(),
+    requestType: Joi.string().valid(...Object.values(ProjectRequest)).required(),
+    projectId: Joi.string().uuid().required(),
   });
   const { error } = schema.validate(body);
   if (error) {

@@ -18,6 +18,7 @@ import roleRoutes from "./modules/roles/versions.routes";
 import employeeRoutes from "./modules/employees/versions.routes"
 import contractorRoutes from "./modules/contractor/versions.routes"
 import projectRoutes from "./modules/project/versions.routes"
+import projectRequestsRoutes from "./modules/projectRequests/versions.routes"
 import consultantRoutes from "./modules/consultant/versions.routes"
 
 import uploadRoutes from "./modules/uploads/versions.routes";
@@ -54,6 +55,7 @@ app.use('/roles', roleRoutes)
 app.use('/employees', employeeRoutes)
 app.use('/contractors', contractorRoutes)
 app.use('/projects', projectRoutes)
+app.use('/project_requests', projectRequestsRoutes)
 app.use('/consultants', consultantRoutes)
 app.use("/upload", uploadRoutes);
 
@@ -71,7 +73,7 @@ const PORT = process.env.PORT || 9091;
 
 const start = async (): Promise<void> => {
   try {
-    // await createTables();
+    await createTables();
     app.listen(PORT, () => {
       console.log(`Server started on port ${PORT}`);
     });

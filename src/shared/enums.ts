@@ -21,3 +21,13 @@ export enum ProjectRequestTypes {
   MSR = 'MSR'
 }
 
+export enum ProjectRequestDomainTypes {
+  STR = 'STR',
+  ARCH = 'ARCH',
+  MECH = 'MECH',
+  ELECT = 'ELECT',
+  FINISH = 'FINISH'
+}
+
+
+
