@@ -12,9 +12,15 @@ import { validateUUID } from "../../../../shared/utils/general-functions";
 
 export async function findAll(req: Request, res: Response) {
   const { order, orderBy, limit, offset } = handlePaginationSort(req.query);
+  const {departmentId} = req.query
+  let filter :any 
+  if(departmentId){
+    validateUUID(departmentId as string, "Invalid department id")
+    filter.departmentId = departmentId
+  }
   const attributes = ["id", "nameEn", "nameAr", "createdAt"];
   const data = await roleServ.findAllAndCount({
-    where: {},
+    where: filter,
     attributes,
     order: [[orderBy, order]],
     limit,

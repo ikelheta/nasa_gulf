@@ -17,7 +17,7 @@ export function validateEmployeeLogin(body: object) {
         "string.pattern.base": "Incorrect username or password",
         "any.required": "Incorrect username or password",
       }),
-    type: Joi.string().valid(...Object.values(SystemUserTypes.Employee))
+    type: Joi.string().valid(SystemUserTypes.Employee)
 
   });
   const { error } = schema.validate(body);
