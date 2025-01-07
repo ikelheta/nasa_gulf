@@ -17,6 +17,8 @@ export function validateAdminLogin(body: object) {
         "string.pattern.base": "Incorrect username or password",
         "any.required": "Incorrect username or password",
       }),
+    type: Joi.string().valid(...Object.values(SystemUserTypes.Consultant))
+
   });
   const { error } = schema.validate(body);
   if (error) {
