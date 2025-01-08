@@ -9,22 +9,28 @@ import {
 } from "./roles.validator";
 import { handlePaginationSort } from "../../../../shared/utils/handle-sort-pagination";
 import { validateUUID } from "../../../../shared/utils/general-functions";
+import Department from "../../../departments/v1/departments.model";
 
 export async function findAll(req: Request, res: Response) {
   const { order, orderBy, limit, offset } = handlePaginationSort(req.query);
   const {departmentId} = req.query
-  let filter :any 
+  let filter :any = {}
   if(departmentId){
-    validateUUID(departmentId as string, "Invalid department id")
+    validateUUID(String(departmentId))
     filter.departmentId = departmentId
   }
-  const attributes = ["id", "nameEn", "nameAr", "createdAt"];
+  
+  const attributes = ["id", "nameEn", "nameAr", "departmentId", "createdAt"];
   const data = await roleServ.findAllAndCount({
     where: filter,
     attributes,
     order: [[orderBy, order]],
     limit,
-    offset
+    offset,
+    include: [{
+      model: Department,
+      attributes: ["id","nameEn", "nameAr"]
+    }]
   });
   res.json({
     data,

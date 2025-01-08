@@ -4,6 +4,7 @@ import { SystemUserTypes } from "../shared/enums";
 import adminServ from "../modules/admins/v1/admin/admins.service";
 import employeeServ from "../modules/employees/v1/admin/employees.service";
 import { BadRequestError, UnAuthorizedError } from "../shared/utils/app-error";
+import consultantService from "../modules/consultant/v1/admin/consultant.service";
 
 const JWT_SECRET = process.env.JWT_SECRET || "secret_key"; // Replace with your secret key
 
@@ -12,7 +13,7 @@ export const authenticate = async (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.headers.authorization?.split(" ")[1]; // Extract token from "Bearer TOKEN"
+  const token = req.headers.authorization?.split(" ")[1]; // Extract token from "Bearer TOKEN"'
   if (!token) {
     return res.status(401).json({ message: "No token provided" });
   }
@@ -32,6 +33,12 @@ export const authenticate = async (
     if (decoded.type == SystemUserTypes.Employee) {
       const employee = await employeeServ.findById(decoded.id, { attributes: { exclude: ['password'] } });
       req.user = { ...employee, type: SystemUserTypes.Employee }; // Attach user info to request object
+      return next();
+
+    }
+    if (decoded.type == SystemUserTypes.Consultant) {
+      const employee = await consultantService.findById(decoded.id, { attributes: { exclude: ['password'] } });
+      req.user = { ...employee, type: SystemUserTypes.Consultant }; // Attach user info to request object
       return next();
 
     }

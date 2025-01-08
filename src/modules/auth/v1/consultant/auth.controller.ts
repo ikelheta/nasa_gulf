@@ -41,7 +41,7 @@ export async function loginAdmin(req : Request, res : Response) {
       throw new BadRequestError('Invalid Email or Password')
     }
     delete admin.password
-    const token = generateToken(admin.id,  SystemUserTypes.Admin)
+    const token = generateToken(admin.id,  SystemUserTypes.Consultant)
     res.json({admin, token })
 }
 export async function forgetPassword(
