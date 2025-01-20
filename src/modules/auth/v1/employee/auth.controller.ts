@@ -42,7 +42,7 @@ export async function loginEmployee(req: Request, res: Response) {
   }
   delete admin.password;
   const token = generateToken(admin.id,  SystemUserTypes.Employee);
-  res.json({ admin, token });
+  res.json({ admin, token , type});
 }
 export async function forgetPassword(req: Request, res: Response) {
   validateEmail(req.body);

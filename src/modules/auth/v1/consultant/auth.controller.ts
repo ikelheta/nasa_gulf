@@ -42,7 +42,7 @@ export async function loginAdmin(req : Request, res : Response) {
     }
     delete admin.password
     const token = generateToken(admin.id,  SystemUserTypes.Consultant)
-    res.json({admin, token })
+    res.json({admin, token, type })
 }
 export async function forgetPassword(
   req: Request,
