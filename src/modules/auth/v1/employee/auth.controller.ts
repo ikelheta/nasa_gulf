@@ -27,11 +27,12 @@ import otpServ from "../../../otp/v1/dashboard/otp.service";
 import employeeServ from "../../../employees/v1/admin/employees.service";
 import { generateToken } from "../../../../shared/utils/jwt";
 import { SystemUserTypes } from "../../../../shared/enums";
+import Role from "../../../roles/v1/roles.model";
 
 export async function loginEmployee(req: Request, res: Response) {
   validateEmployeeLogin(req.body);
   const { email, password, type } = req.body;
-  const admin = await employeeServ.findOne({ where: { email } });
+  const admin = await employeeServ.findOne({ where: { email }, include : [{model : Role}] });
   if (!admin) {
     throw new BadRequestError("Invalid Email or Password");
   }
