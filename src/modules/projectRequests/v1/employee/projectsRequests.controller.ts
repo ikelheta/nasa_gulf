@@ -76,7 +76,7 @@ export async function findAll(req: AuthenticationRequest, res: Response) {
     validateUUID(projectId as string)
     filter = {
       [Op.or]: [
-        { createdByEmployee: employeeId },
+        { createdByEmployee: employeeId , projectId  },
         { projectId: { [Op.in]: projectIds.filter((ele)=> ele == projectId) } }
       ]
     }
