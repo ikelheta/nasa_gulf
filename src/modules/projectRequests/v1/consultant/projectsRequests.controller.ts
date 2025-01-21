@@ -7,16 +7,13 @@ import {
 } from "../../../../shared/utils/app-error";
 import projectRequestServ from "./projectsRequests.service";
 import { AuthenticationRequest } from "../../../../shared/interfaces";
-import {
-  validateUpdateProjectRequest,
-} from "./projectsRequests.validator";
+import { validateUpdateProjectRequest } from "./projectsRequests.validator";
 import { validateUUID } from "../../../../shared/utils/general-functions";
 
 import projectsService from "../../../project/v1/admin/projects.service";
 import { handlePaginationSort } from "../../../../shared/utils/handle-sort-pagination";
 import { Op, Sequelize } from "sequelize";
 import Project from "../../../project/v1/projects.model";
-
 
 export async function update(req: AuthenticationRequest, res: Response) {
   validateUpdateProjectRequest(req.body);
@@ -49,13 +46,15 @@ export async function deleteOne(req: AuthenticationRequest, res: Response) {
 }
 export async function findAll(req: AuthenticationRequest, res: Response) {
   const { order, orderBy, limit, offset } = handlePaginationSort(req.query);
-  const { id } = req.params;
+  const { projectId } = req.query;
+  let filter: any = {};
   const consultantId = req.user.id;
-  validateUUID(id);
-  await projectsService.findByIdOrThrowError(id);
-  let filter: any = {
-    projectId: id,
-  };
+
+  if (projectId) {
+    validateUUID(projectId as string);
+    await projectsService.findByIdOrThrowError(projectId as string);
+    filter.projectId = projectId;
+  }
 
   const data = await projectRequestServ.findAllAndCount({
     where: filter,

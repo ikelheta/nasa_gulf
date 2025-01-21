@@ -11,7 +11,8 @@ projectRequestRoutes.use(asyncWrapper(authorize(SystemUserTypes.Admin)))
 
 projectRequestRoutes
   .route("/")
-  .post(asyncWrapper(projectrRequestController.create));
+  .post(asyncWrapper(projectrRequestController.create))
+  .get(asyncWrapper(projectrRequestController.findAll))
 projectRequestRoutes
   .route("/:id")
   .get(asyncWrapper(projectrRequestController.findOne))

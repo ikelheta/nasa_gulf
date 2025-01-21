@@ -13,6 +13,7 @@ import { hashPassword } from "../../../../shared/utils/generalFunctions";
 import { handlePaginationSort } from "../../../../shared/utils/handle-sort-pagination";
 import Role from "../../../roles/v1/roles.model";
 import Department from "../../../departments/v1/departments.model";
+import { Op } from "sequelize";
 
 
 export async function getProfile(
@@ -115,7 +116,12 @@ export async function getAll(
   next: NextFunction
 ) {
   const { limit, offset, order, orderBy } = handlePaginationSort(req.query)
-  const all = await employeeServ.findAllAndCount({ limit, offset, order: [[orderBy, order]], attributes: { exclude: ["password"] } })
+  const {search} = req.query
+        let filter : any = {}
+        if(search){
+          filter.name = {[Op.iLike]: `%${search}%`}
+        } 
+  const all = await employeeServ.findAllAndCount({ where : filter, limit, offset, order: [[orderBy, order]], attributes: { exclude: ["password"] } })
   res.json({
     data: all,
     message: null,

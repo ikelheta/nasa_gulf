@@ -13,12 +13,23 @@ import {
 } from "./contractor.validator";
 import { handlePaginationSort } from "../../../../shared/utils/handle-sort-pagination";
 import { validateUUID } from "../../../../shared/utils/general-functions";
+import { Op } from "sequelize";
 
 export async function findAll(req: Request, res: Response) {
   const { order, orderBy, limit, offset } = handlePaginationSort(req.query);
+  const { search } = req.query;
+  let filter: any = {};
+  if (search) {
+    filter = {
+      [Op.or]: [
+        { nameEn: { [Op.iLike]: `%${search}%` } },
+        { nameAr: { [Op.iLike]: `%${search}%` } },
+      ],
+    };
+  }
   const attributes = ["id", "nameEn", "nameAr", "image", "email", "createdAt"];
   const data = await contractorServ.findAllAndCount({
-    where: {},
+    where: filter,
     attributes,
     order: [[orderBy, order]],
     limit,
@@ -46,7 +57,7 @@ export async function update(req: Request, res: Response) {
   validateUUID(id);
   validateUpdateContractor(req.body);
   const { email, nameEn, nameAr } = req.body;
-  
+
   if (email) {
     await contractorServ.validateEmailNotExistForUpdate(email, id);
   }
@@ -57,7 +68,7 @@ export async function update(req: Request, res: Response) {
     await contractorServ.validateNameArNotExistForUpdate(nameAr, id);
   }
 
-  const data = await contractorServ.update(req.body, {where : {id}});
+  const data = await contractorServ.update(req.body, { where: { id } });
   res.json({
     data,
     message: null,

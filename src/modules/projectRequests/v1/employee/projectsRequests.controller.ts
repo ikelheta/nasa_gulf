@@ -62,16 +62,26 @@ export async function deleteOne(req: AuthenticationRequest, res: Response) {
 }
 export async function findAll(req: AuthenticationRequest, res: Response) {
   const { order, orderBy, limit, offset } = handlePaginationSort(req.query);
-  const {id} = req.params
-  const project = await projectsService.findByIdOrThrowError(id)
+  const { projectId } = req.query
   const employeeId = req.user.id
-  let filter : any = {
-    projectId:  id
+  const projects = await projectsService.findAll({ where: { managerId: employeeId }, attributes: ["id"] })
+  const projectIds = projects.map((ele) => ele.id)
+ let filter : any = {
+    [Op.or]: [
+      { createdByEmployee: employeeId },
+      { projectId: { [Op.in]: projectIds } }
+    ]
   }
-  if(project.managerId != employeeId){
-    filter.createdByEmployee = employeeId
+  if (projectId) {
+    validateUUID(projectId as string)
+    filter = {
+      [Op.or]: [
+        { createdByEmployee: employeeId },
+        { projectId: { [Op.in]: projectIds.filter((ele)=> ele == projectId) } }
+      ]
+    }
+
   }
-  console.log(filter);
   const data = await projectRequestServ.findAllAndCount({
     where: filter,
     order: [[orderBy, order]],

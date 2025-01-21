@@ -9,10 +9,8 @@ const projectRequestRoutes = Router();
 projectRequestRoutes.use(asyncWrapper(authenticate))
 projectRequestRoutes.use(asyncWrapper(authorize(SystemUserTypes.Consultant)))
 projectRequestRoutes
-  .route("/")
-  projectRequestRoutes
-  .route("/project/:id")
-  .get(asyncWrapper(projectrRequestController.findAll))
+  .route("/").get(asyncWrapper(projectrRequestController.findAll))
+
 projectRequestRoutes
   .route("/:id")
   .get(asyncWrapper(projectrRequestController.findOne))

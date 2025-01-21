@@ -14,6 +14,8 @@ import {
 import { validateUUID } from "../../../../shared/utils/general-functions";
 
 import projectsService from "../../../project/v1/admin/projects.service";
+import Project from "../../../project/v1/projects.model";
+import { handlePaginationSort } from "../../../../shared/utils/handle-sort-pagination";
 
 
 export async function create(req: AuthenticationRequest, res: Response) {
@@ -53,6 +55,34 @@ export async function deleteOne(req: Request, res: Response) {
   const { id } = req.params;
   validateUUID(id);
   const data = await projectRequestServ.delete({ where: { id } });
+  res.json({
+    data,
+    message: null,
+  });
+}
+export async function findAll(req: AuthenticationRequest, res: Response) {
+  const { order, orderBy, limit, offset } = handlePaginationSort(req.query);
+  const { projectId } = req.query;
+  let filter: any = {};
+  if (projectId) {
+    validateUUID(projectId as string);
+    await projectsService.findByIdOrThrowError(projectId as string);
+    filter.projectId = projectId;
+  }
+
+  const data = await projectRequestServ.findAllAndCount({
+    where: filter,
+    order: [[orderBy, order]],
+    limit,
+    offset,
+    include: [
+      {
+        model: Project,
+        attributes: ["id", "nameEn", "nameAr"],
+      },
+    ],
+  });
+
   res.json({
     data,
     message: null,
