@@ -29,5 +29,11 @@ export enum ProjectRequestDomainTypes {
   FINISH = 'FINISH'
 }
 
+export enum ProjectMaterialRequestStatus {
+  PENDING = 'PENDING',
+  ACCEPTED = 'ACCEPTED',
+  DELIVERED = 'DELIVERED',
+  
+}
 
 

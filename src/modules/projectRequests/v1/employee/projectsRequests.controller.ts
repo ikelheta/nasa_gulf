@@ -16,6 +16,8 @@ import { validateUUID } from "../../../../shared/utils/general-functions";
 import projectsService from "../../../project/v1/admin/projects.service";
 import { handlePaginationSort } from "../../../../shared/utils/handle-sort-pagination";
 import { Op, Sequelize } from "sequelize";
+import Employee from "../../../employees/v1/employees.model";
+import Admin from "../../../admins/v1/admins.model";
 
 
 export async function create(req: AuthenticationRequest, res: Response) {
@@ -45,7 +47,7 @@ export async function update(req: AuthenticationRequest, res: Response) {
 export async function findOne(req: AuthenticationRequest, res: Response) {
   const { id } = req.params;
   validateUUID(id);
-  const data = await projectRequestServ.findByIdOrThrowError(id, {});
+  const data = await projectRequestServ.findByIdOrThrowError(id, { include: [{ model: Employee, attributes: ["id", "name", "image"] }, { model: Admin, attributes: ["id", "name", "image"] }] });
   res.json({
     data,
     message: null,
@@ -66,7 +68,7 @@ export async function findAll(req: AuthenticationRequest, res: Response) {
   const employeeId = req.user.id
   const projects = await projectsService.findAll({ where: { managerId: employeeId }, attributes: ["id"] })
   const projectIds = projects.map((ele) => ele.id)
- let filter : any = {
+  let filter: any = {
     [Op.or]: [
       { createdByEmployee: employeeId },
       { projectId: { [Op.in]: projectIds } }
@@ -76,8 +78,8 @@ export async function findAll(req: AuthenticationRequest, res: Response) {
     validateUUID(projectId as string)
     filter = {
       [Op.or]: [
-        { createdByEmployee: employeeId , projectId  },
-        { projectId: { [Op.in]: projectIds.filter((ele)=> ele == projectId) } }
+        { createdByEmployee: employeeId, projectId },
+        { projectId: { [Op.in]: projectIds.filter((ele) => ele == projectId) } }
       ]
     }
 

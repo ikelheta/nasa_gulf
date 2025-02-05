@@ -3,10 +3,14 @@ import Consultant from "../../modules/consultant/v1/consultant.model";
 import Contractor from "../../modules/contractor/v1/contractor.model";
 import Department from "../../modules/departments/v1/departments.model";
 import Employee from "../../modules/employees/v1/employees.model";
+import Inventory from "../../modules/inventories/v1/inventory.model";
+import ProjectMaterialRequest from "../../modules/projectMaterialRequest/v1/projectMaterialRequest.model";
+import Item from "../../modules/items/v1/item.model";
 import Otp from "../../modules/otp/v1/otp.model";
 import Project from "../../modules/project/v1/projects.model";
 import ProjectRequest from "../../modules/projectRequests/v1/projectsRequest.model";
 import Role from "../../modules/roles/v1/roles.model";
+import InventoryItems from "../../shared/junctionTables/inventoryItems.model";
 import ProjectEngineers from "../../shared/junctionTables/projectEmployees.model";
 import ProjectSubContractors from "../../shared/junctionTables/projectsSubContractors.mode";
 
@@ -69,12 +73,26 @@ const setupAssociations = () => {
         through: ProjectSubContractors
 
     });
+
     Project.belongsToMany(Contractor, {
         foreignKey: 'projectId',
         as: 'subContractors',
         through: ProjectSubContractors
 
     });
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ProjectSubContractors.belongsTo(Project, {
+        foreignKey: 'projectId',
+    });
+    Project.hasMany(ProjectSubContractors, {
+        foreignKey: 'projectId',
+    });
+
+ 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     Project.belongsTo(Employee, {
         foreignKey: 'managerId',
@@ -129,6 +147,30 @@ const setupAssociations = () => {
     });
     Admin.hasMany(ProjectRequest, {
         foreignKey: 'createdByAdmin',
+    })
+
+    Item.belongsToMany(Inventory, {
+        foreignKey: 'itemId',
+        through: InventoryItems
+    });
+    Inventory.belongsToMany(Item, {
+        foreignKey: 'inventoryId',
+        through: InventoryItems
+
+    })
+
+    ProjectMaterialRequest.belongsTo(Employee, {
+        foreignKey: 'createdBy',
+    });
+    Employee.hasMany(ProjectMaterialRequest, {
+        foreignKey: 'createdBy',
+    })
+
+    ProjectMaterialRequest.belongsTo(Project, {
+        foreignKey: 'projectId',
+    });
+    Project.hasMany(ProjectMaterialRequest, {
+        foreignKey: 'projectId',
     })
 }
 

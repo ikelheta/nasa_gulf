@@ -14,6 +14,8 @@ import projectsService from "../../../project/v1/admin/projects.service";
 import { handlePaginationSort } from "../../../../shared/utils/handle-sort-pagination";
 import { Op, Sequelize } from "sequelize";
 import Project from "../../../project/v1/projects.model";
+import Employee from "../../../employees/v1/employees.model";
+import Admin from "../../../admins/v1/admins.model";
 
 export async function update(req: AuthenticationRequest, res: Response) {
   validateUpdateProjectRequest(req.body);
@@ -29,7 +31,7 @@ export async function update(req: AuthenticationRequest, res: Response) {
 export async function findOne(req: AuthenticationRequest, res: Response) {
   const { id } = req.params;
   validateUUID(id);
-  const data = await projectRequestServ.findByIdOrThrowError(id, {});
+  const data = await projectRequestServ.findByIdOrThrowError(id, {include: [{ model: Employee, attributes: ["id", "name", "image"] }, { model: Admin, attributes: ["id", "name", "image"] }] });
   res.json({
     data,
     message: null,

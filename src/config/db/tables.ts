@@ -11,7 +11,6 @@ import setupAssociations from "./associations";
 
 const createTables = async () => {
   try {
-    setupAssociations()
 
     await sequelize.sync({ alter: true, logging: false });
     console.log("Tables created successfully...");

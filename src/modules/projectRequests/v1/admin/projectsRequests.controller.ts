@@ -16,15 +16,17 @@ import { validateUUID } from "../../../../shared/utils/general-functions";
 import projectsService from "../../../project/v1/admin/projects.service";
 import Project from "../../../project/v1/projects.model";
 import { handlePaginationSort } from "../../../../shared/utils/handle-sort-pagination";
-
+import Admin from "../../../admins/v1/admins.model";
+import Employee from "../../../employees/v1/employees.model";
+import Contractor from "../../../contractor/v1/contractor.model";
 
 export async function create(req: AuthenticationRequest, res: Response) {
   validateUpdateProjectRequest(req.body);
-  const {projectId} = req.body
+  const { projectId } = req.body;
   // validate contractor
-  const project = await projectsService.findByIdOrThrowError(projectId)
-  req.body.code = `${project.code}-${req.body.type}`
-  req.body.createdByAdmin = req.user.id
+  const project = await projectsService.findByIdOrThrowError(projectId);
+  req.body.code = `${project.code}-${req.body.type}`;
+  req.body.createdByAdmin = req.user.id;
   const data = await projectRequestServ.createOne(req.body);
   res.json({
     data,
@@ -33,9 +35,9 @@ export async function create(req: AuthenticationRequest, res: Response) {
 }
 export async function update(req: Request, res: Response) {
   validateCreateProjectRequest(req.body);
-  const {id} = req.params
-  validateUUID(id)
-   // validate contractor
+  const { id } = req.params;
+  validateUUID(id);
+  // validate contractor
   const data = await projectRequestServ.updateOneByIdOrThrowError(id, req.body);
   res.json({
     data,
@@ -45,7 +47,27 @@ export async function update(req: Request, res: Response) {
 export async function findOne(req: Request, res: Response) {
   const { id } = req.params;
   validateUUID(id);
-  const data = await projectRequestServ.findByIdOrThrowError(id, {});
+  const data = await projectRequestServ.findByIdOrThrowError(id, {
+    include: [
+      { model: Employee, attributes: ["id", "name", "image"] },
+      { model: Admin, attributes: ["id", "name", "image"] },
+      {
+        model: Project,
+        include: [
+          {
+            model: Contractor,
+            as: "mainContractor",
+            attributes: ["id", "image"],
+          },
+          {
+            model: Contractor,
+            as: "subContractors",
+            attributes: ["id", "image"],
+          },
+        ],
+      },
+    ],
+  });
   res.json({
     data,
     message: null,

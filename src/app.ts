@@ -20,9 +20,12 @@ import contractorRoutes from "./modules/contractor/versions.routes"
 import projectRoutes from "./modules/project/versions.routes"
 import projectRequestsRoutes from "./modules/projectRequests/versions.routes"
 import consultantRoutes from "./modules/consultant/versions.routes"
+import itemRoutes from "./modules/items/versions.routes"
+import inventoryRoutes from "./modules/inventories/versions.routes"
 
 import uploadRoutes from "./modules/uploads/versions.routes";
 import Otp from "./modules/otp/v1/otp.model";
+import setupAssociations from "./config/db/associations";
 
 process.env.TZ = "Asia/Riyadh";
 const limiter = rateLimit({
@@ -57,6 +60,8 @@ app.use('/contractors', contractorRoutes)
 app.use('/projects', projectRoutes)
 app.use('/project_requests', projectRequestsRoutes)
 app.use('/consultants', consultantRoutes)
+app.use('/items', itemRoutes)
+app.use('/inventories', inventoryRoutes)
 app.use("/upload", uploadRoutes);
 
 
@@ -73,7 +78,9 @@ const PORT = process.env.PORT || 9091;
 
 const start = async (): Promise<void> => {
   try {
-    await createTables();
+    setupAssociations()
+
+    // await createTables();
     app.listen(PORT, () => {
       console.log(`Server started on port ${PORT}`);
     });
