@@ -57,12 +57,12 @@ export async function findOne(req: Request, res: Response) {
           {
             model: Contractor,
             as: "mainContractor",
-            attributes: ["id", "image"],
+            attributes: ["id", "nameEn", "nameAr","image"],
           },
           {
             model: Contractor,
             as: "subContractors",
-            attributes: ["id", "image"],
+            attributes: ["id", "nameEn", "nameAr","image"],
           },
         ],
       },
