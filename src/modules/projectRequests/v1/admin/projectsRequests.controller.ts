@@ -19,6 +19,7 @@ import { handlePaginationSort } from "../../../../shared/utils/handle-sort-pagin
 import Admin from "../../../admins/v1/admins.model";
 import Employee from "../../../employees/v1/employees.model";
 import Contractor from "../../../contractor/v1/contractor.model";
+import Consultant from "../../../consultant/v1/consultant.model";
 
 export async function create(req: AuthenticationRequest, res: Response) {
   validateUpdateProjectRequest(req.body);
@@ -63,6 +64,10 @@ export async function findOne(req: Request, res: Response) {
             model: Contractor,
             as: "subContractors",
             attributes: ["id", "nameEn", "nameAr","image"],
+          },
+          {
+            model: Consultant,
+            attributes: ["id", "name", "image"],
           },
         ],
       },

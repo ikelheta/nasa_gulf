@@ -18,6 +18,9 @@ import { handlePaginationSort } from "../../../../shared/utils/handle-sort-pagin
 import { Op, Sequelize } from "sequelize";
 import Employee from "../../../employees/v1/employees.model";
 import Admin from "../../../admins/v1/admins.model";
+import Consultant from "../../../consultant/v1/consultant.model";
+import Contractor from "../../../contractor/v1/contractor.model";
+import Project from "../../../project/v1/projects.model";
 
 
 export async function create(req: AuthenticationRequest, res: Response) {
@@ -47,8 +50,31 @@ export async function update(req: AuthenticationRequest, res: Response) {
 export async function findOne(req: AuthenticationRequest, res: Response) {
   const { id } = req.params;
   validateUUID(id);
-  const data = await projectRequestServ.findByIdOrThrowError(id, { include: [{ model: Employee, attributes: ["id", "name", "image"] }, { model: Admin, attributes: ["id", "name", "image"] }] });
-  res.json({
+  const data = await projectRequestServ.findByIdOrThrowError(id, {
+    include: [
+      { model: Employee, attributes: ["id", "name", "image"] },
+      { model: Admin, attributes: ["id", "name", "image"] },
+      {
+        model: Project,
+        include: [
+          {
+            model: Contractor,
+            as: "mainContractor",
+            attributes: ["id", "nameEn", "nameAr", "image"],
+          },
+          {
+            model: Contractor,
+            as: "subContractors",
+            attributes: ["id", "nameEn", "nameAr", "image"],
+          },
+          {
+            model: Consultant,
+            attributes: ["id", "name", "image"],
+          },
+        ],
+      },
+    ],
+  }); res.json({
     data,
     message: null,
   });
