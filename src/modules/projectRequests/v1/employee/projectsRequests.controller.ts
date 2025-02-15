@@ -22,14 +22,13 @@ import Consultant from "../../../consultant/v1/consultant.model";
 import Contractor from "../../../contractor/v1/contractor.model";
 import Project from "../../../project/v1/projects.model";
 
-
 export async function create(req: AuthenticationRequest, res: Response) {
   validateUpdateProjectRequest(req.body);
-  const { projectId } = req.body
+  const { projectId } = req.body;
   // validate contractor
-  const project = await projectsService.findByIdOrThrowError(projectId)
-  req.body.code = `${project.code}-${req.body.type}`
-  req.body.createdByEmployee = req.user.id
+  const project = await projectsService.findByIdOrThrowError(projectId);
+  req.body.code = `${project.code}-${req.body.type}`;
+  req.body.createdByEmployee = req.user.id;
   const data = await projectRequestServ.createOne(req.body);
   res.json({
     data,
@@ -38,8 +37,8 @@ export async function create(req: AuthenticationRequest, res: Response) {
 }
 export async function update(req: AuthenticationRequest, res: Response) {
   validateCreateProjectRequest(req.body);
-  const { id } = req.params
-  validateUUID(id)
+  const { id } = req.params;
+  validateUUID(id);
   // validate contractor
   const data = await projectRequestServ.updateOneByIdOrThrowError(id, req.body);
   res.json({
@@ -69,12 +68,14 @@ export async function findOne(req: AuthenticationRequest, res: Response) {
           },
           {
             model: Consultant,
+            as : 'consultant',
             attributes: ["id", "name", "image"],
           },
         ],
       },
     ],
-  }); res.json({
+  });
+  res.json({
     data,
     message: null,
   });
@@ -90,36 +91,39 @@ export async function deleteOne(req: AuthenticationRequest, res: Response) {
 }
 export async function findAll(req: AuthenticationRequest, res: Response) {
   const { order, orderBy, limit, offset } = handlePaginationSort(req.query);
-  const { projectId } = req.query
-  const employeeId = req.user.id
-  const projects = await projectsService.findAll({ where: { managerId: employeeId }, attributes: ["id"] })
-  const projectIds = projects.map((ele) => ele.id)
+  const { projectId } = req.query;
+  const employeeId = req.user.id;
+  const projects = await projectsService.findAll({
+    where: { managerId: employeeId },
+    attributes: ["id"],
+  });
+  const projectIds = projects.map((ele) => ele.id);
   let filter: any = {
     [Op.or]: [
       { createdByEmployee: employeeId },
-      { projectId: { [Op.in]: projectIds } }
-    ]
-  }
+      { projectId: { [Op.in]: projectIds } },
+    ],
+  };
   if (projectId) {
-    validateUUID(projectId as string)
+    validateUUID(projectId as string);
     filter = {
       [Op.or]: [
         { createdByEmployee: employeeId, projectId },
-        { projectId: { [Op.in]: projectIds.filter((ele) => ele == projectId) } }
-      ]
-    }
-
+        {
+          projectId: { [Op.in]: projectIds.filter((ele) => ele == projectId) },
+        },
+      ],
+    };
   }
   const data = await projectRequestServ.findAllAndCount({
     where: filter,
     order: [[orderBy, order]],
     limit,
-    offset
+    offset,
   });
 
   res.json({
     data,
-    message: null
-  })
-
+    message: null,
+  });
 }

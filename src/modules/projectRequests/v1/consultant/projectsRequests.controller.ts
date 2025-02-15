@@ -52,6 +52,8 @@ export async function findOne(req: AuthenticationRequest, res: Response) {
           },
           {
             model: Consultant,
+            as : 'consultant',
+
             attributes: ["id", "name", "image"],
           },
         ],

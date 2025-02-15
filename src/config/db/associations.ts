@@ -13,6 +13,7 @@ import Role from "../../modules/roles/v1/roles.model";
 import InventoryItems from "../../shared/junctionTables/inventoryItems.model";
 import ProjectEngineers from "../../shared/junctionTables/projectEmployees.model";
 import ProjectSubContractors from "../../shared/junctionTables/projectsSubContractors.mode";
+import MaterialRequestItems from "../../shared/junctionTables/materialRequestItems.model";
 
 
 
@@ -159,11 +160,28 @@ const setupAssociations = () => {
 
     })
 
+    Item.belongsToMany(ProjectMaterialRequest, {
+        foreignKey: 'itemId',
+        through: MaterialRequestItems
+    });
+    ProjectMaterialRequest.belongsToMany(Item, {
+        foreignKey: 'requestId',
+        through: MaterialRequestItems
+
+    })
+
     ProjectMaterialRequest.belongsTo(Employee, {
-        foreignKey: 'createdBy',
+        foreignKey: 'createdByEmployee',
     });
     Employee.hasMany(ProjectMaterialRequest, {
-        foreignKey: 'createdBy',
+        foreignKey: 'createdByEmployee',
+    })
+    
+    ProjectMaterialRequest.belongsTo(Admin, {
+        foreignKey: 'createdByAdmin',
+    });
+    Admin.hasMany(ProjectMaterialRequest, {
+        foreignKey: 'createdByAdmin',
     })
 
     ProjectMaterialRequest.belongsTo(Project, {

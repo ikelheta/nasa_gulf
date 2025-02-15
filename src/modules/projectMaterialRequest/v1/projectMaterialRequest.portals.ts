@@ -1,6 +1,6 @@
 import { Router } from "express";
 import dashboardRoutes from "./admin/routes";
-import employeeRoutes from "./employee/item.routes";
+import employeeRoutes from "./employee/routes";
 
 const adminsV1Routes = Router();
 

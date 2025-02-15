@@ -5,7 +5,7 @@ import {
   UnprocessableEntityError,
 } from "../../../../shared/utils/app-error";
 import { PASSWORD_VALIDATION } from "../../../../shared/constant";
-import Item from "../projectMaterialRequest.model";
+import Item from "../../../items/v1/item.model";
 import { BaseRepository } from "../../../../shared/baseRepository";
 import {
   CountOptions,
@@ -18,14 +18,19 @@ import {
 import ProjectMaterialRequest from "../projectMaterialRequest.model";
 import MaterialRequestItems from "../../../../shared/junctionTables/materialRequestItems.model";
 import sequelize from "../../../../config/db/config";
+import InventoryItems from "../../../../shared/junctionTables/inventoryItems.model";
 
 class ProjectMaterialRequestService {
   requestRepo: BaseRepository<ProjectMaterialRequest>;
   requestItemsRepo: BaseRepository<MaterialRequestItems>;
+  itemsRepo: BaseRepository<Item>;
+  inventoryItems: BaseRepository<InventoryItems>;
 
   constructor() {
     this.requestRepo = BaseRepository.getInstance(ProjectMaterialRequest);
     this.requestItemsRepo = BaseRepository.getInstance(MaterialRequestItems);
+    this.itemsRepo = BaseRepository.getInstance(Item);
+    this.inventoryItems = BaseRepository.getInstance(InventoryItems);
   }
   async createOne(body: any, items: any[]) {
     const transaction = await sequelize.transaction();
@@ -45,7 +50,7 @@ class ProjectMaterialRequestService {
       throw new AppError(error);
     }
   }
-  async update(data: IAdmin, options: UpdateOptions) {
+  async update(data: any, options: UpdateOptions) {
     const one = await this.requestRepo.update(data, options);
     return one;
   }
@@ -107,5 +112,39 @@ class ProjectMaterialRequestService {
       throw new BadRequestError("This name already exist");
     }
   }
+  async acceptRequest(items: any[], inventoryId: string, requestId : string) {
+    const transaction = await sequelize.transaction();
+
+    try {
+      for (let item of items) {
+      
+        const existItem = await this.itemsRepo.findOneByIdOrThrowError(
+          item.id,
+        );
+        console.log(existItem);
+        const existInInventory = await this.inventoryItems.findOne({
+          where: { inventoryId, itemId: item.id },
+        });
+        console.log(existInInventory);
+        if (
+          !existInInventory ||
+          !existInInventory.quantity ||
+          existInInventory.quantity < item.quantity
+        ) {
+          throw new BadRequestError(`No stock for item ${existItem.name}`);
+        }
+        await await this.inventoryItems.update(
+          { quantity: existInInventory.quantity - item.quantity },
+          { where: { inventoryId, itemId: item.id }, transaction }
+        );
+        await this.requestItemsRepo.update({deliveredQuantity : item.quantity}, {where : {requestId , itemId : item.id}})
+      }
+      await transaction.commit();
+    } catch (error) {
+      await transaction.rollback();
+      throw new BadRequestError(error as string);
+    }
+  }
 }
+
 export default new ProjectMaterialRequestService();

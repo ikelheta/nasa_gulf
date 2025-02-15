@@ -30,3 +30,17 @@ export function validateUpdate(body: object) {
   }
   return;
 }
+export function validateAcceptRequest(body: object) {
+  const schema = Joi.object({
+    inventoryId : Joi.string().uuid().required(),
+    items: Joi.array().items(Joi.object({
+      id: Joi.string().uuid().required(),
+      quantity: Joi.number().min(0)
+    })).min(1).required()
+  });
+  const { error } = schema.validate(body);
+  if (error) {
+    throw new UnprocessableEntityError(error.message);
+  }
+  return;
+}

@@ -9,6 +9,7 @@ import sequelize from "../../../config/db/config";
 import Project from "../../project/v1/projects.model";
 import Employee from "../../employees/v1/employees.model";
 import { ProjectMaterialRequestStatus } from "../../../shared/enums";
+import Admin from "../../admins/v1/admins.model";
 
 class ProjectMaterialRequest extends Model<
   InferAttributes<ProjectMaterialRequest>,
@@ -36,11 +37,17 @@ ProjectMaterialRequest.init(
         key: "id",
       },
     },
-    createdBy: {
+    createdByEmployee: {
       type: DataTypes.UUID,
-      allowNull: false,
       references: {
         model: Employee,
+        key: "id",
+      },
+    },
+    createdByAdmin: {
+      type: DataTypes.UUID,
+      references: {
+        model: Admin,
         key: "id",
       },
     },

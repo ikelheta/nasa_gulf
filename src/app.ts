@@ -22,6 +22,7 @@ import projectRequestsRoutes from "./modules/projectRequests/versions.routes"
 import consultantRoutes from "./modules/consultant/versions.routes"
 import itemRoutes from "./modules/items/versions.routes"
 import inventoryRoutes from "./modules/inventories/versions.routes"
+import materialRequestRoutes from "./modules/projectMaterialRequest/versions.routes"
 
 import uploadRoutes from "./modules/uploads/versions.routes";
 import Otp from "./modules/otp/v1/otp.model";
@@ -62,6 +63,7 @@ app.use('/project_requests', projectRequestsRoutes)
 app.use('/consultants', consultantRoutes)
 app.use('/items', itemRoutes)
 app.use('/inventories', inventoryRoutes)
+app.use('/material_request', materialRequestRoutes)
 app.use("/upload", uploadRoutes);
 
 

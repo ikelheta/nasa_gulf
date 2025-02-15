@@ -9,12 +9,13 @@ const itemRoutes = Router();
 itemRoutes.use(asyncWrapper(authenticate))
 itemRoutes.use(asyncWrapper(authorize(SystemUserTypes.Employee)))
 itemRoutes
-  .route("/")
+  .route("/") 
   .get(asyncWrapper(itemController.findAll))
   .post(asyncWrapper(itemController.create));
   itemRoutes
   .route("/:id")
   .get(asyncWrapper(itemController.findOne))
-  .delete(asyncWrapper(itemController.deleteOne));
+  .delete(asyncWrapper(itemController.deleteOne))
+  .put(asyncWrapper(itemController.acceptRequest))
 
 export default itemRoutes;
