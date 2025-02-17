@@ -6,12 +6,13 @@ import { SystemUserTypes } from "../../../../shared/enums";
 import { authorize } from "../../../../middleware/authorization";
 
 const adminRoutes = Router();
-// adminRoutes.use(asyncWrapper(authenticate))
-// adminRoutes.use(asyncWrapper(authorize(SystemUserTypes.Admin)))
+
 adminRoutes
   .route("/")
   .post(asyncWrapper(AdminController.createAdmin))
-  .get(asyncWrapper(AdminController.getAll))
+  .get(asyncWrapper(AdminController.getAll));
+adminRoutes.use(asyncWrapper(authenticate));
+adminRoutes.use(asyncWrapper(authorize(SystemUserTypes.Admin)));
 adminRoutes
   .route("/profile")
   .get(asyncWrapper(AdminController.getProfile))
@@ -20,8 +21,6 @@ adminRoutes
   .route("/:id")
   .get(asyncWrapper(AdminController.getOne))
   .put(asyncWrapper(AdminController.updateOne))
-  .delete(asyncWrapper(AdminController.deleteOne))
-
-
+  .delete(asyncWrapper(AdminController.deleteOne));
 
 export default adminRoutes;

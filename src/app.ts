@@ -82,7 +82,7 @@ const start = async (): Promise<void> => {
   try {
     setupAssociations()
 
-    // await createTables();
+    await createTables();
     app.listen(PORT, () => {
       console.log(`Server started on port ${PORT}`);
     });
