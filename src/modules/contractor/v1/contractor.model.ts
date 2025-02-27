@@ -9,20 +9,15 @@ import bcrypt from "bcrypt";
 import sequelize from "../../../config/db/config";
 import { DEFAULT_IMAGE_PATH, SALT } from "../../../shared/constant";
 
-class Contractor extends Model<
-  InferAttributes<Contractor>, // Attributes available on Admin instances
-  InferCreationAttributes<Contractor>
-> {
+class Contractor extends Model<any> {
   // Attributes available when creating Admin instances>
   declare id: CreationOptional<string>; // Mark as optional for creation
   declare image: string;
   declare nameEn: string;
   declare nameAr: string;
   declare email: string;
-
-
-
-
+  declare phoneNumber: string;
+  declare vatNumber: string;
 }
 
 Contractor.init(
@@ -45,11 +40,20 @@ Contractor.init(
       type: DataTypes.STRING(255),
       allowNull: false,
     },
-    email: {
+    phoneNumber: {
       type: DataTypes.STRING(255),
-      validate: {
-        isEmail: true,
-      },
+    },
+    vatNumber: {
+      type: DataTypes.STRING(255),
+    },
+    bankAccountNumber : {
+      type: DataTypes.STRING(255),
+    },
+    authorizedLetter  : {
+      type: DataTypes.STRING(255),
+    },
+    typeOfWork  : {
+      type: DataTypes.STRING(255),
     },
   },
   {
@@ -58,6 +62,5 @@ Contractor.init(
     paranoid: true,
   }
 );
-
 
 export default Contractor;

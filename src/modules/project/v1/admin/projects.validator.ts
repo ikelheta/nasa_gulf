@@ -23,7 +23,9 @@ export function validateCreateProject(body: object) {
     code : Joi.string().max(255).required(),
     contractorId : Joi.string().uuid().required(),
     subCotractorId : Joi.array().items(Joi.string()).unique().required(),
-    consultantId : Joi.string().uuid().required()
+    consultantId : Joi.string().uuid().required(),
+    contract : Joi.string().max(255),
+    clientName : Joi.string().max(255),
 
    
   });
@@ -56,7 +58,9 @@ export function validateUpdateProject(body: object) {
     code : Joi.string().max(255),
     contractorId : Joi.string().uuid().required(),
     subCotractorId : Joi.array().items(Joi.string()).unique().required(),
-    consultantId : Joi.string().uuid().required()
+    consultantId : Joi.string().uuid().required(),
+    contract : Joi.string().max(255),
+    clientName : Joi.string().max(255),
   });
   const { error } = schema.validate(body);
   if (error) {

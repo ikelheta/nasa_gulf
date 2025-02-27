@@ -26,6 +26,8 @@ class Project extends Model<
   declare contractorId: string;
   declare subContractorId: string;
   declare consultantId: string;
+  declare contract: string;
+  declare clientName: string;
 
 
 
@@ -59,6 +61,12 @@ Project.init(
       type: DataTypes.STRING(255)
     },
     description: {
+      type: DataTypes.STRING(255)
+    },
+    contract: {
+      type: DataTypes.STRING(255)
+    },
+    clientName: {
       type: DataTypes.STRING(255)
     },
     contractorId: {

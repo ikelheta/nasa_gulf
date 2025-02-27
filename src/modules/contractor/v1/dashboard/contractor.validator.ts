@@ -17,6 +17,11 @@ export function validateCreateContractor(body: object) {
         "any.required": "image is required and cannot be null.",
       }).required(),
     email: Joi.string().max(255).email(),
+    phoneNumber: Joi.string().max(255),
+    vatNumber: Joi.string().max(255),
+    bankAccountNumber: Joi.string().max(255),
+    authorizedLetter: Joi.string().max(255),
+    typeOfWork: Joi.string().max(255),
    
   });
   const { error } = schema.validate(body);
@@ -42,6 +47,11 @@ export function validateUpdateContractor(body: object) {
         "any.required": "image is required and cannot be null.",
       }),
     email: Joi.string().max(255).email(),
+    phoneNumber: Joi.string().max(255),
+    vatNumber: Joi.string().max(255),
+    bankAccountNumber: Joi.string().max(255),
+    authorizedLetter: Joi.string().max(255),
+    typeOfWork: Joi.string().max(255),
   });
   const { error } = schema.validate(body);
   if (error) {
