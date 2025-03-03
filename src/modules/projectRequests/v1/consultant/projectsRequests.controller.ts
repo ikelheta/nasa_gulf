@@ -76,10 +76,16 @@ export async function deleteOne(req: AuthenticationRequest, res: Response) {
 }
 export async function findAll(req: AuthenticationRequest, res: Response) {
   const { order, orderBy, limit, offset } = handlePaginationSort(req.query);
-  const { projectId } = req.query;
+  const { projectId, requestType, type } = req.query;
   let filter: any = {};
   const consultantId = req.user.id;
+  if (requestType) {
+    filter.requestType = requestType
+  }
+  if (type) {
+    filter.type = type
 
+  }
   if (projectId) {
     validateUUID(projectId as string);
     await projectsService.findByIdOrThrowError(projectId as string);

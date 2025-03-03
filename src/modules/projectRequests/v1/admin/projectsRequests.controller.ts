@@ -58,16 +58,16 @@ export async function findOne(req: Request, res: Response) {
           {
             model: Contractor,
             as: "mainContractor",
-            attributes: ["id", "nameEn", "nameAr","image"],
+            attributes: ["id", "nameEn", "nameAr", "image"],
           },
           {
             model: Contractor,
             as: "subContractors",
-            attributes: ["id", "nameEn", "nameAr","image"],
+            attributes: ["id", "nameEn", "nameAr", "image"],
           },
           {
             model: Consultant,
-            as : 'consultant',
+            as: "consultant",
 
             attributes: ["id", "name", "image"],
           },
@@ -91,12 +91,25 @@ export async function deleteOne(req: Request, res: Response) {
 }
 export async function findAll(req: AuthenticationRequest, res: Response) {
   const { order, orderBy, limit, offset } = handlePaginationSort(req.query);
-  const { projectId } = req.query;
+  const { projectId, type, requestType } = req.query;
   let filter: any = {};
   if (projectId) {
     validateUUID(projectId as string);
     await projectsService.findByIdOrThrowError(projectId as string);
     filter.projectId = projectId;
+  }
+  let include: any = [
+    {
+      model: Project,
+      attributes: ["id", "nameEn", "nameAr"],
+    },
+  ];
+  if (requestType) {
+    filter.requestType = requestType
+  }
+  if (type) {
+    filter.type = type
+
   }
 
   const data = await projectRequestServ.findAllAndCount({
@@ -104,12 +117,7 @@ export async function findAll(req: AuthenticationRequest, res: Response) {
     order: [[orderBy, order]],
     limit,
     offset,
-    include: [
-      {
-        model: Project,
-        attributes: ["id", "nameEn", "nameAr"],
-      },
-    ],
+    include,
   });
 
   res.json({

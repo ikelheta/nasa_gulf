@@ -68,7 +68,7 @@ export async function findOne(req: AuthenticationRequest, res: Response) {
           },
           {
             model: Consultant,
-            as : 'consultant',
+            as: "consultant",
             attributes: ["id", "name", "image"],
           },
         ],
@@ -91,7 +91,7 @@ export async function deleteOne(req: AuthenticationRequest, res: Response) {
 }
 export async function findAll(req: AuthenticationRequest, res: Response) {
   const { order, orderBy, limit, offset } = handlePaginationSort(req.query);
-  const { projectId } = req.query;
+  const { projectId, requestType, type } = req.query;
   const employeeId = req.user.id;
   const projects = await projectsService.findAll({
     where: { managerId: employeeId },
@@ -104,6 +104,12 @@ export async function findAll(req: AuthenticationRequest, res: Response) {
       { projectId: { [Op.in]: projectIds } },
     ],
   };
+  if (requestType) {
+    filter.requestType = requestType;
+  }
+  if (type) {
+    filter.type = type;
+  }
   if (projectId) {
     validateUUID(projectId as string);
     filter = {
